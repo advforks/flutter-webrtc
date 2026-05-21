@@ -30,8 +30,9 @@ class RTCFactoryNative extends RTCFactory {
 
   @override
   Future<RTCPeerConnection> createPeerConnection(
-      Map<String, dynamic> configuration,
-      [Map<String, dynamic> constraints = const {}]) async {
+    Map<String, dynamic> configuration, [
+    Map<String, dynamic> constraints = const {},
+  ]) async {
     var defaultConstraints = <String, dynamic>{
       'mandatory': {},
       'optional': [
@@ -39,13 +40,11 @@ class RTCFactoryNative extends RTCFactory {
       ],
     };
 
-    final response = await WebRTC.invokeMethod(
-      'createPeerConnection',
-      <String, dynamic>{
-        'configuration': configuration,
-        'constraints': constraints.isEmpty ? defaultConstraints : constraints
-      },
-    );
+    final response =
+        await WebRTC.invokeMethod('createPeerConnection', <String, dynamic>{
+          'configuration': configuration,
+          'constraints': constraints.isEmpty ? defaultConstraints : constraints,
+        });
 
     String peerConnectionId = response['peerConnectionId'];
     return RTCPeerConnectionNative(peerConnectionId, configuration);
@@ -72,9 +71,7 @@ class RTCFactoryNative extends RTCFactory {
   Future<RTCRtpCapabilities> getRtpReceiverCapabilities(String kind) async {
     final response = await WebRTC.invokeMethod(
       'getRtpReceiverCapabilities',
-      <String, dynamic>{
-        'kind': kind,
-      },
+      <String, dynamic>{'kind': kind},
     );
     return RTCRtpCapabilities.fromMap(response);
   }
@@ -83,19 +80,20 @@ class RTCFactoryNative extends RTCFactory {
   Future<RTCRtpCapabilities> getRtpSenderCapabilities(String kind) async {
     final response = await WebRTC.invokeMethod(
       'getRtpSenderCapabilities',
-      <String, dynamic>{
-        'kind': kind,
-      },
+      <String, dynamic>{'kind': kind},
     );
     return RTCRtpCapabilities.fromMap(response);
   }
 }
 
 Future<RTCPeerConnection> createPeerConnection(
-    Map<String, dynamic> configuration,
-    [Map<String, dynamic> constraints = const {}]) async {
-  return RTCFactoryNative.instance
-      .createPeerConnection(configuration, constraints);
+  Map<String, dynamic> configuration, [
+  Map<String, dynamic> constraints = const {},
+]) async {
+  return RTCFactoryNative.instance.createPeerConnection(
+    configuration,
+    constraints,
+  );
 }
 
 Future<MediaStream> createLocalMediaStream(String label) async {

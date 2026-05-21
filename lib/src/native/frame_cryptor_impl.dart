@@ -32,10 +32,9 @@ class KeyProviderImpl implements KeyProvider {
   Future<Uint8List> ratchetSharedKey({int index = 0}) async {
     try {
       final response = await WebRTC.invokeMethod(
-          'keyProviderRatchetSharedKey', <String, dynamic>{
-        'keyProviderId': _id,
-        'keyIndex': index,
-      });
+        'keyProviderRatchetSharedKey',
+        <String, dynamic>{'keyProviderId': _id, 'keyIndex': index},
+      );
       return response['result'];
     } on PlatformException catch (e) {
       throw 'Unable to KeyProviderImpl::ratchetSharedKey: ${e.message}';
@@ -46,10 +45,9 @@ class KeyProviderImpl implements KeyProvider {
   Future<Uint8List> exportSharedKey({int index = 0}) async {
     try {
       final response = await WebRTC.invokeMethod(
-          'keyProviderExportSharedKey', <String, dynamic>{
-        'keyProviderId': _id,
-        'keyIndex': index,
-      });
+        'keyProviderExportSharedKey',
+        <String, dynamic>{'keyProviderId': _id, 'keyIndex': index},
+      );
       return response['result'];
     } on PlatformException catch (e) {
       throw 'Unable to KeyProviderImpl::exportSharedKey: ${e.message}';
@@ -65,11 +63,11 @@ class KeyProviderImpl implements KeyProvider {
     try {
       final response =
           await WebRTC.invokeMethod('keyProviderSetKey', <String, dynamic>{
-        'keyProviderId': _id,
-        'keyIndex': index,
-        'key': key,
-        'participantId': participantId,
-      });
+            'keyProviderId': _id,
+            'keyIndex': index,
+            'key': key,
+            'participantId': participantId,
+          });
       return response['result'];
     } on PlatformException catch (e) {
       throw 'Unable to KeyProviderImpl::setKey: ${e.message}';
@@ -82,12 +80,14 @@ class KeyProviderImpl implements KeyProvider {
     required int index,
   }) async {
     try {
-      final response =
-          await WebRTC.invokeMethod('keyProviderRatchetKey', <String, dynamic>{
-        'keyProviderId': _id,
-        'keyIndex': index,
-        'participantId': participantId,
-      });
+      final response = await WebRTC.invokeMethod(
+        'keyProviderRatchetKey',
+        <String, dynamic>{
+          'keyProviderId': _id,
+          'keyIndex': index,
+          'participantId': participantId,
+        },
+      );
       return response['result'];
     } on PlatformException catch (e) {
       throw 'Unable to KeyProviderImpl::ratchetKey: ${e.message}';
@@ -100,12 +100,14 @@ class KeyProviderImpl implements KeyProvider {
     required int index,
   }) async {
     try {
-      final response =
-          await WebRTC.invokeMethod('keyProviderExportKey', <String, dynamic>{
-        'keyProviderId': _id,
-        'participantId': participantId,
-        'keyIndex': index,
-      });
+      final response = await WebRTC.invokeMethod(
+        'keyProviderExportKey',
+        <String, dynamic>{
+          'keyProviderId': _id,
+          'participantId': participantId,
+          'keyIndex': index,
+        },
+      );
       return response['result'];
     } on PlatformException catch (e) {
       throw 'Unable to KeyProviderImpl::exportSharedKey: ${e.message}';
@@ -152,14 +154,16 @@ class FrameCryptorFactoryImpl implements FrameCryptorFactory {
     RTCRtpSenderNative nativeSender = sender as RTCRtpSenderNative;
     try {
       final response = await WebRTC.invokeMethod(
-          'frameCryptorFactoryCreateFrameCryptor', <String, dynamic>{
-        'peerConnectionId': nativeSender.peerConnectionId,
-        'rtpSenderId': sender.senderId,
-        'participantId': participantId,
-        'keyProviderId': keyProvider.id,
-        'algorithm': algorithm.index,
-        'type': 'sender',
-      });
+        'frameCryptorFactoryCreateFrameCryptor',
+        <String, dynamic>{
+          'peerConnectionId': nativeSender.peerConnectionId,
+          'rtpSenderId': sender.senderId,
+          'participantId': participantId,
+          'keyProviderId': keyProvider.id,
+          'algorithm': algorithm.index,
+          'type': 'sender',
+        },
+      );
       var frameCryptorId = response['frameCryptorId'];
       return FrameCryptorImpl(frameCryptorId, participantId);
     } on PlatformException catch (e) {
@@ -178,14 +182,16 @@ class FrameCryptorFactoryImpl implements FrameCryptorFactory {
 
     try {
       final response = await WebRTC.invokeMethod(
-          'frameCryptorFactoryCreateFrameCryptor', <String, dynamic>{
-        'peerConnectionId': nativeReceiver.peerConnectionId,
-        'rtpReceiverId': nativeReceiver.receiverId,
-        'participantId': participantId,
-        'keyProviderId': keyProvider.id,
-        'algorithm': algorithm.index,
-        'type': 'receiver',
-      });
+        'frameCryptorFactoryCreateFrameCryptor',
+        <String, dynamic>{
+          'peerConnectionId': nativeReceiver.peerConnectionId,
+          'rtpReceiverId': nativeReceiver.receiverId,
+          'participantId': participantId,
+          'keyProviderId': keyProvider.id,
+          'algorithm': algorithm.index,
+          'type': 'receiver',
+        },
+      );
       var frameCryptorId = response['frameCryptorId'];
       return FrameCryptorImpl(frameCryptorId, participantId);
     } on PlatformException catch (e) {
@@ -195,12 +201,13 @@ class FrameCryptorFactoryImpl implements FrameCryptorFactory {
 
   @override
   Future<KeyProvider> createDefaultKeyProvider(
-      KeyProviderOptions options) async {
+    KeyProviderOptions options,
+  ) async {
     try {
       final response = await WebRTC.invokeMethod(
-          'frameCryptorFactoryCreateKeyProvider', <String, dynamic>{
-        'keyProviderOptions': options.toJson(),
-      });
+        'frameCryptorFactoryCreateKeyProvider',
+        <String, dynamic>{'keyProviderOptions': options.toJson()},
+      );
       String keyProviderId = response['keyProviderId'];
       return KeyProviderImpl(keyProviderId);
     } on PlatformException catch (e) {
@@ -211,9 +218,9 @@ class FrameCryptorFactoryImpl implements FrameCryptorFactory {
 
 class FrameCryptorImpl extends FrameCryptor {
   FrameCryptorImpl(this._frameCryptorId, this._participantId) {
-    _eventSubscription = _eventChannelFor(_frameCryptorId)
-        .receiveBroadcastStream()
-        .listen(eventListener, onError: errorListener);
+    _eventSubscription = _eventChannelFor(
+      _frameCryptorId,
+    ).receiveBroadcastStream().listen(eventListener, onError: errorListener);
   }
   final String _frameCryptorId;
   final String _participantId;
@@ -271,10 +278,9 @@ class FrameCryptorImpl extends FrameCryptor {
   Future<bool> setKeyIndex(int index) async {
     try {
       final response = await WebRTC.invokeMethod(
-          'frameCryptorSetKeyIndex', <String, dynamic>{
-        'frameCryptorId': _frameCryptorId,
-        'keyIndex': index,
-      });
+        'frameCryptorSetKeyIndex',
+        <String, dynamic>{'frameCryptorId': _frameCryptorId, 'keyIndex': index},
+      );
       return response['result'];
     } on PlatformException catch (e) {
       throw 'Unable to RTCRtpSenderNative::setKeyIndex: ${e.message}';
@@ -285,9 +291,9 @@ class FrameCryptorImpl extends FrameCryptor {
   Future<int> get keyIndex async {
     try {
       final response = await WebRTC.invokeMethod(
-          'frameCryptorGetKeyIndex', <String, dynamic>{
-        'frameCryptorId': _frameCryptorId,
-      });
+        'frameCryptorGetKeyIndex',
+        <String, dynamic>{'frameCryptorId': _frameCryptorId},
+      );
       return response['keyIndex'];
     } on PlatformException catch (e) {
       throw 'Unable to RTCRtpSenderNative::keyIndex: ${e.message}';
@@ -297,11 +303,13 @@ class FrameCryptorImpl extends FrameCryptor {
   @override
   Future<bool> setEnabled(bool enabled) async {
     try {
-      final response =
-          await WebRTC.invokeMethod('frameCryptorSetEnabled', <String, dynamic>{
-        'frameCryptorId': _frameCryptorId,
-        'enabled': enabled,
-      });
+      final response = await WebRTC.invokeMethod(
+        'frameCryptorSetEnabled',
+        <String, dynamic>{
+          'frameCryptorId': _frameCryptorId,
+          'enabled': enabled,
+        },
+      );
       return response['result'];
     } on PlatformException catch (e) {
       throw 'Unable to RTCRtpSenderNative::setEnabled: ${e.message}';
@@ -311,10 +319,10 @@ class FrameCryptorImpl extends FrameCryptor {
   @override
   Future<bool> get enabled async {
     try {
-      final response =
-          await WebRTC.invokeMethod('frameCryptorGetEnabled', <String, dynamic>{
-        'frameCryptorId': _frameCryptorId,
-      });
+      final response = await WebRTC.invokeMethod(
+        'frameCryptorGetEnabled',
+        <String, dynamic>{'frameCryptorId': _frameCryptorId},
+      );
       return response['enabled'];
     } on PlatformException catch (e) {
       throw 'Unable to RTCRtpSenderNative::enabled: ${e.message}';
@@ -326,10 +334,10 @@ class FrameCryptorImpl extends FrameCryptor {
     _eventSubscription?.cancel();
     _eventSubscription = null;
     try {
-      final response =
-          await WebRTC.invokeMethod('frameCryptorDispose', <String, dynamic>{
-        'frameCryptorId': _frameCryptorId,
-      });
+      final response = await WebRTC.invokeMethod(
+        'frameCryptorDispose',
+        <String, dynamic>{'frameCryptorId': _frameCryptorId},
+      );
       var res = response['result'];
       print('res $res');
     } on PlatformException catch (e) {

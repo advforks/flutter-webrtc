@@ -3,6 +3,8 @@
 
 [Unreleased]
 
+* [Web] Restore `lib/src/web` implementations and `dart_webrtc` dependency.
+* [CI] Fix format check, disable SPM for iOS/macOS example builds, fix Windows ARM64 Flutter setup.
 * [Windows] Add native Windows ARM64 support (`FLUTTER_TARGET_PLATFORM=windows-arm64`).
 * [Windows] Download `libwebrtc-windows-arm64.zip` when ARM64 binaries are not in `libwebrtc.zip`.
 * [Windows] Add build/packaging docs and scripts under `third_party/`.
