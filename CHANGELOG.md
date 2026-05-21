@@ -3,6 +3,8 @@
 
 [Unreleased]
 
+* [Darwin] Replace symlink placeholder files in iOS/macOS SPM sources with real `common/darwin` sources (fixes CI).
+* [Windows] Use single `libwebrtc.zip` download for all platforms; remove separate ARM64 supplement URL.
 * [Web] Restore `lib/src/web` implementations and `dart_webrtc` dependency.
 * [CI] Fix format check, disable SPM for iOS/macOS example builds, fix Windows ARM64 Flutter setup.
 * [Windows] Add native Windows ARM64 support (`FLUTTER_TARGET_PLATFORM=windows-arm64`).

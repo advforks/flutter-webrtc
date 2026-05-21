@@ -81,7 +81,7 @@ jobs:
   build-for-windows-arm64:
     name: Build for Flutter Windows ARM64
     runs-on: windows-11-arm
-    # Requires libwebrtc-windows-arm64.zip on release v1.4.2+; Flutter stable ARM64 SDK is not yet on flutter-action.
+    # Needs lib/windows-arm64/ in libwebrtc.zip; uses X64 Flutter SDK on WoA until stable ARM64 SDK exists.
     continue-on-error: true
 
     steps:

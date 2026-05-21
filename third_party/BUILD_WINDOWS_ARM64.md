@@ -71,25 +71,14 @@ Artifacts (typical paths under `out/Windows-arm64`):
 
 ## Package for release
 
-After a successful build, create the **Windows ARM64 supplement** (recommended):
-
-```powershell
-third_party\scripts\package_libwebrtc_windows_arm64_zip.ps1 `
-  -WindowsArm64BuildDir "build\libwebrtc_src\src\out\Windows-arm64"
-```
-
-Upload `third_party/downloads/libwebrtc-windows-arm64.zip` to GitHub release **v1.4.2**
-(see [RELEASE_LIBWEBRTC.md](RELEASE_LIBWEBRTC.md)). The plugin downloads this automatically on
-`windows-arm64` builds when `lib/windows-arm64/` is not in the main `libwebrtc.zip`.
-
-To merge ARM64 into the full archive instead:
+Merge ARM64 into the **same** `libwebrtc.zip` used by every platform:
 
 ```powershell
 third_party\scripts\package_libwebrtc_zip.ps1 `
   -WindowsArm64BuildDir "build\libwebrtc_src\src\out\Windows-arm64"
 ```
 
-Upload the updated `libwebrtc.zip` and bump `LIBWEBRTC_RELEASE_VERSION` in [CMakeLists.txt](CMakeLists.txt).
+Upload the updated archive to the [flutter-webrtc release](https://github.com/flutter-webrtc/flutter-webrtc/releases) (same URL as other arches). See [RELEASE_LIBWEBRTC.md](RELEASE_LIBWEBRTC.md).
 
 ## Local development without a new release
 

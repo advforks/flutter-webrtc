@@ -1,12 +1,15 @@
 include(ExternalProject)
 
-# Bump when publishing a new libwebrtc.zip (must include lib/windows-arm64/ for WoA).
+# Single prebuilt archive for all desktop/embedded platforms (linux-*, win64, windows-arm64, elinux-*, etc.).
 set(LIBWEBRTC_RELEASE_VERSION "v1.4.0" CACHE STRING
-  "GitHub release tag for libwebrtc.zip (use v1.4.2+ once Windows ARM64 binaries are attached)")
+  "GitHub release tag for libwebrtc.zip")
+
+set(LIBWEBRTC_DOWNLOAD_URL
+  "https://github.com/flutter-webrtc/flutter-webrtc/releases/download/${LIBWEBRTC_RELEASE_VERSION}/libwebrtc.zip"
+  CACHE STRING "URL for libwebrtc prebuilt binaries")
 
 set(ZIPFILE "${CMAKE_CURRENT_LIST_DIR}/downloads/libwebrtc.zip")
-set(DOWNLOAD_URL
-  "https://github.com/flutter-webrtc/flutter-webrtc/releases/download/${LIBWEBRTC_RELEASE_VERSION}/libwebrtc.zip")
+set(DOWNLOAD_URL "${LIBWEBRTC_DOWNLOAD_URL}")
 
 if(NOT EXISTS "${ZIPFILE}")
   message(NOTICE "download: ${DOWNLOAD_URL}")
