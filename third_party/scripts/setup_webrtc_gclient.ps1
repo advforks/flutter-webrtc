@@ -40,11 +40,18 @@ if (-not (Test-Path "libwebrtc")) {
 git -C libwebrtc fetch --depth 1 origin main 2>$null
 git -C libwebrtc checkout main 2>$null
 
-git apply libwebrtc/patchs/custom_audio_source_m144.patch
+git -C libwebrtc apply --check patchs/custom_audio_source_m144.patch 2>$null
+if ($LASTEXITCODE -eq 0) {
+    git -C libwebrtc apply patchs/custom_audio_source_m144.patch
+}
 
 $buildGn = Get-Content "BUILD.gn" -Raw
 if ($buildGn -notmatch '//libwebrtc') {
-    $buildGn = $buildGn -replace 'deps = \[ ":webrtc" \]', 'deps = [ ":webrtc","//libwebrtc", ]'
+    if ($buildGn -match 'deps = \[ ":webrtc" \]') {
+        $buildGn = $buildGn -replace 'deps = \[ ":webrtc" \]', 'deps = [ ":webrtc","//libwebrtc", ]'
+    } else {
+        Write-Warning "Could not auto-patch BUILD.gn; add //libwebrtc to group(default) deps manually."
+    }
     Set-Content -Path "BUILD.gn" -Value $buildGn -NoNewline
     Write-Host "Patched src/BUILD.gn to include //libwebrtc"
 }

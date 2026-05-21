@@ -47,7 +47,7 @@ Add `flutter_webrtc` as a [dependency in your pubspec.yaml file](https://flutter
 
 Native **Windows on ARM (ARM64)** is supported when building on a Windows 11 ARM64 device with a recent Flutter SDK (3.16+). The plugin selects prebuilt `libwebrtc.dll` for `windows-arm64` via `FLUTTER_TARGET_PLATFORM`.
 
-- ARM64 binaries are downloaded from the [`libwebrtc-windows-arm64.zip`](https://github.com/flutter-webrtc/flutter-webrtc/releases) release asset (see [third_party/BUILD_WINDOWS_ARM64.md](third_party/BUILD_WINDOWS_ARM64.md) to build locally).
+- ARM64 binaries are downloaded from [`libwebrtc-windows-arm64.zip`](https://github.com/advforks/flutter-webrtc/releases/tag/v1.4.2) on release **v1.4.2** (build via [third_party/BUILD_WINDOWS_ARM64.md](third_party/BUILD_WINDOWS_ARM64.md) or the [publish workflow](.github/workflows/publish-libwebrtc-windows-arm64.yml)). Override `LIBWEBRTC_GITHUB_REPO` in CMake to use `flutter-webrtc/flutter-webrtc` if mirrored upstream.
 - x64 Windows continues to use `lib/win64/` from the main `libwebrtc.zip`.
 - Running an x64 build on an ARM64 PC under emulation is not the same as a native ARM64 build.
 
