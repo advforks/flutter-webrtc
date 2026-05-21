@@ -1,6 +1,12 @@
 
 # Changelog
 
+[Unreleased]
+
+* [Windows] Add native Windows ARM64 support (`FLUTTER_TARGET_PLATFORM=windows-arm64`).
+* [Windows] Download `libwebrtc-windows-arm64.zip` when ARM64 binaries are not in `libwebrtc.zip`.
+* [Windows] Add build/packaging docs and scripts under `third_party/`.
+
 [1.4.1] -2026-03-24
 
 * [Dart] fixed scalabilityMode (#2022).

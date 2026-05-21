@@ -48,3 +48,8 @@ build/
 **/Flutter/flutter_export_environment.sh
 **/.symlinks/
 **/Pods/
+
+# Downloaded / extracted libwebrtc prebuilts
+third_party/downloads/*.zip
+third_party/downloads/*.shasum
+third_party/libwebrtc/

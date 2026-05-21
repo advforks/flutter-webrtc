@@ -25,7 +25,7 @@ Enterprise Grade APIs for Feeds, Chat, & Video. <a href="https://getstream.io/vi
 
 ## Functionality
 
-| Feature | Android | iOS | [Web](https://flutter.dev/web) | macOS | Windows | Linux | [Embedded](https://github.com/sony/flutter-elinux) | [Fuchsia](https://fuchsia.dev/) |
+| Feature | Android | iOS | [Web](https://flutter.dev/web) | macOS | Windows (x64 / ARM64) | Linux | [Embedded](https://github.com/sony/flutter-elinux) | [Fuchsia](https://fuchsia.dev/) |
 | :-------------: | :-------------:| :-----: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: |
 | Audio/Video | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | |
 | Data Channel | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | |
@@ -42,6 +42,14 @@ Additional platform/OS support from the other community
 - flutter-elinux(WIP): <https://github.com/sony/flutter-elinux-plugins/issues/7>
 
 Add `flutter_webrtc` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+
+### Windows (ARM64)
+
+Native **Windows on ARM (ARM64)** is supported when building on a Windows 11 ARM64 device with a recent Flutter SDK (3.16+). The plugin selects prebuilt `libwebrtc.dll` for `windows-arm64` via `FLUTTER_TARGET_PLATFORM`.
+
+- ARM64 binaries are downloaded from the [`libwebrtc-windows-arm64.zip`](https://github.com/flutter-webrtc/flutter-webrtc/releases) release asset (see [third_party/BUILD_WINDOWS_ARM64.md](third_party/BUILD_WINDOWS_ARM64.md) to build locally).
+- x64 Windows continues to use `lib/win64/` from the main `libwebrtc.zip`.
+- Running an x64 build on an ARM64 PC under emulation is not the same as a native ARM64 build.
 
 ### iOS
 

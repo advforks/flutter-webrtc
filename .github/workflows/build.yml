@@ -80,6 +80,21 @@ jobs:
         working-directory: ./example
         run: flutter build windows --release
 
+  build-for-windows-arm64:
+    name: Build for Flutter Windows ARM64
+    runs-on: windows-11-arm
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Install project dependencies
+        run: flutter pub get
+      - name: Build for Windows ARM64
+        working-directory: ./example
+        run: flutter build windows --release
+
   build-for-macos:
     name: Build for flutter macOS
     runs-on: macos-latest

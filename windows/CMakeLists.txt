@@ -9,6 +9,72 @@ endif()
 # Add the libwebrtc dependency
 include("${CMAKE_CURRENT_SOURCE_DIR}/../third_party/CMakeLists.txt")
 
+# Flutter sets this for Windows x64 and ARM64 builds; older toolchains default to x64.
+if(NOT DEFINED FLUTTER_TARGET_PLATFORM)
+  set(FLUTTER_TARGET_PLATFORM "windows-x64")
+endif()
+
+if(FLUTTER_TARGET_PLATFORM STREQUAL "windows-x64")
+  set(LIBWEBRTC_PLATFORM_DIR "win64")
+elseif(FLUTTER_TARGET_PLATFORM STREQUAL "windows-arm64")
+  set(LIBWEBRTC_PLATFORM_DIR "windows-arm64")
+else()
+  message(FATAL_ERROR
+    "flutter_webrtc: Unsupported FLUTTER_TARGET_PLATFORM '${FLUTTER_TARGET_PLATFORM}'. "
+    "Supported: windows-x64, windows-arm64")
+endif()
+
+set(LIBWEBRTC_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/libwebrtc")
+set(LIBWEBRTC_LIB_DIR "${LIBWEBRTC_ROOT}/lib/${LIBWEBRTC_PLATFORM_DIR}")
+set(LIBWEBRTC_DLL "${LIBWEBRTC_LIB_DIR}/libwebrtc.dll")
+set(LIBWEBRTC_IMPLIB "${LIBWEBRTC_LIB_DIR}/libwebrtc.dll.lib")
+
+# Windows ARM64 binaries are shipped as a separate release asset (or inside libwebrtc.zip).
+if(NOT EXISTS "${LIBWEBRTC_DLL}" AND FLUTTER_TARGET_PLATFORM STREQUAL "windows-arm64")
+  set(LIBWEBRTC_WINDOWS_ARM64_RELEASE_VERSION "v1.4.2" CACHE STRING
+    "GitHub release tag for libwebrtc-windows-arm64.zip")
+  set(LIBWEBRTC_GITHUB_REPO "advforks/flutter-webrtc" CACHE STRING
+    "GitHub owner/repo hosting libwebrtc-windows-arm64.zip (mirror flutter-webrtc/flutter-webrtc for upstream)")
+  set(LIBWEBRTC_ARM64_ZIP
+    "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/downloads/libwebrtc-windows-arm64.zip")
+  set(LIBWEBRTC_ARM64_URL
+    "https://github.com/${LIBWEBRTC_GITHUB_REPO}/releases/download/${LIBWEBRTC_WINDOWS_ARM64_RELEASE_VERSION}/libwebrtc-windows-arm64.zip")
+
+  if(NOT EXISTS "${LIBWEBRTC_ARM64_ZIP}")
+    message(NOTICE "download: ${LIBWEBRTC_ARM64_URL}")
+    file(DOWNLOAD "${LIBWEBRTC_ARM64_URL}"
+      ${LIBWEBRTC_ARM64_ZIP}
+      STATUS libwebrtc_arm64_download_status
+      LOG libwebrtc_arm64_download_log)
+    if(NOT libwebrtc_arm64_download_status EQUAL 0)
+      message(FATAL_ERROR
+        "flutter_webrtc: Failed to download Windows ARM64 libwebrtc: ${libwebrtc_arm64_download_log}\n"
+        "Build ARM64 binaries with third_party/BUILD_WINDOWS_ARM64.md or place them under:\n"
+        "  ${LIBWEBRTC_LIB_DIR}/")
+    endif()
+  endif()
+
+  file(ARCHIVE_EXTRACT INPUT ${LIBWEBRTC_ARM64_ZIP}
+    DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/../third_party")
+endif()
+
+if(NOT EXISTS "${LIBWEBRTC_DLL}")
+  if(FLUTTER_TARGET_PLATFORM STREQUAL "windows-arm64")
+    message(FATAL_ERROR
+      "flutter_webrtc: Missing ${LIBWEBRTC_DLL}\n"
+      "Windows ARM64 requires lib/windows-arm64/ in libwebrtc.zip or "
+      "libwebrtc-windows-arm64.zip (see third_party/BUILD_WINDOWS_ARM64.md).")
+  else()
+    message(FATAL_ERROR
+      "flutter_webrtc: Missing ${LIBWEBRTC_DLL}\n"
+      "See third_party/RELEASE_LIBWEBRTC.md")
+  endif()
+endif()
+if(NOT EXISTS "${LIBWEBRTC_IMPLIB}")
+  message(FATAL_ERROR
+    "flutter_webrtc: Missing ${LIBWEBRTC_IMPLIB}")
+endif()
+
 # This value is used when generating builds using this plugin, so it must
 # not be changed
 set(PLUGIN_NAME "flutter_webrtc_plugin")
@@ -49,14 +115,14 @@ target_include_directories(${PLUGIN_NAME} INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/../common/cpp/include"
   "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/libwebrtc/include"
 )
-target_link_libraries(${PLUGIN_NAME} PRIVATE 
+target_link_libraries(${PLUGIN_NAME} PRIVATE
   flutter
   flutter_wrapper_plugin
-  "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/libwebrtc/lib/win64/libwebrtc.dll.lib"
+  "${LIBWEBRTC_IMPLIB}"
 )
 
 # List of absolute paths to libraries that should be bundled with the plugin
 set(flutter_webrtc_bundled_libraries
-  "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/libwebrtc/lib/win64/libwebrtc.dll"
+  "${LIBWEBRTC_DLL}"
   PARENT_SCOPE
 )
